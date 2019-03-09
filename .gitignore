@@ -1,0 +1,15 @@
+/dist/
+/logs/
+/lib/
+/build/
+/out/
+/release/
+/temp/
+/nbproject/private/
+/classes/
+/target/
+/.libs/
+*.o
+.classpath
+.project
+*.prefs
