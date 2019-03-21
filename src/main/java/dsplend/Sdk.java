@@ -72,6 +72,7 @@ public class Sdk {
             Transaction transaction = Transaction.create(privateKey, from, to, Transaction.Type.TRANSFER_TOKENS, String.valueOf(tokens), "", "", "", System.currentTimeMillis());
             JSONObject jsonObject = new JSONObject(http.post("http://" + node.getHttpEndpoint().getHost() + ":" + String.valueOf(node.getHttpEndpoint().getPort()) + "/v1/transactions", getHeaders(), transaction.toString()));
             receipt = (Receipt) AJson.deserialize(Receipt.class, jsonObject.toString());
+            receipt.setTransaction(transaction);
             return receipt;
         }
     }
@@ -89,6 +90,7 @@ public class Sdk {
             Transaction transaction = Transaction.create(fromAccount.getPrivateKey(), fromAccount.getAddress(), toAccount.getAddress(), Transaction.Type.TRANSFER_TOKENS, String.valueOf(tokens), "", "", "", System.currentTimeMillis());
             JSONObject jsonObject = new JSONObject(http.post("http://" + node.getHttpEndpoint().getHost()  + ":" + String.valueOf(node.getHttpEndpoint().getPort()) + "/v1/transactions", getHeaders(), transaction.toString()));
             receipt = (Receipt) AJson.deserialize(Receipt.class, jsonObject.toString());
+            receipt.setTransaction(transaction);
             return receipt;
         }
     }
@@ -124,6 +126,7 @@ public class Sdk {
                     System.currentTimeMillis());
             JSONObject jsonObject = new JSONObject(http.post("http://" + node.getHttpEndpoint().getHost() + ":" + String.valueOf(node.getHttpEndpoint().getPort()) + "/v1/transactions", getHeaders(), transaction.toString()));
             receipt = (Receipt) AJson.deserialize(Receipt.class, jsonObject.toString());
+            receipt.setTransaction(transaction);
             return receipt;
         }
     }
@@ -159,6 +162,7 @@ public class Sdk {
                     System.currentTimeMillis());
             JSONObject jsonObject = new JSONObject(http.post("http://" + node.getHttpEndpoint().getHost() + ":" + String.valueOf(node.getHttpEndpoint().getPort()) + "/v1/transactions", getHeaders(), transaction.toString()));
             receipt = (Receipt) AJson.deserialize(Receipt.class, jsonObject.toString());
+            receipt.setTransaction(transaction);
             return receipt;
         }
     }
@@ -251,6 +255,32 @@ public class Sdk {
             JSONObject jsonObject = new JSONObject(http.get("http://" + receipt.getNodeIp() + ":1975/v1/statuses/" + receipt.getId(), getHeaders()));
             this.receipt = (Receipt) AJson.deserialize(Receipt.class, jsonObject.toString());
             return this.receipt;
+        }
+    }
+
+    /**
+     * @return
+     * @throws Exception
+     */
+    public String getTransactionStatus(Node node, String hash) throws Exception {
+        try (Http http = new Http()) {
+            JSONObject jsonObject = new JSONObject(http.get("http://" + node.getHttpEndpoint().getHost() + ":" + String.valueOf(node.getHttpEndpoint().getPort()) + "/v1/transactions/" + hash, getHeaders()));
+            return jsonObject.getJSONObject("data").getJSONObject("receipt").getString("status");
+        }
+    }
+
+    /**
+     * @return
+     * @throws Exception
+     */
+    public String getTransactionStatusWaitUntilOk(Node node, String hash, long milliseconds) throws Exception {
+        while (true) {
+            String status = getTransactionStatus(node, hash);
+            if (status.equals("Ok") || (milliseconds <= 0)){
+                return status;
+            }
+            Thread.sleep(200);
+            milliseconds -= 200;
         }
     }
 

@@ -56,6 +56,7 @@ public class Receipt extends AJson {
     private String nodeIp;
     private Timestamp updated;
     private Timestamp created;
+    private Transaction transaction;
 
     /**
      *
@@ -178,5 +179,21 @@ public class Receipt extends AJson {
             return false;
         }
         return status.equals(Status.OK);
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Transaction getTransaction() {
+        return transaction;
+    }
+
+    /**
+     *
+     * @param transaction
+     */
+    public void setTransaction(Transaction transaction) {
+        this.transaction = transaction;
     }
 }
