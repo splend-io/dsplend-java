@@ -22,6 +22,7 @@ public class Transaction extends AJson {
         public final static byte TRANSFER_TOKENS = 0;
         public final static byte SET_NAME = 1;
         public final static byte SMART_CONTRACT = 2;
+        public final static byte READ_SMART_CONTRACT = 3;
     }
 
     /**

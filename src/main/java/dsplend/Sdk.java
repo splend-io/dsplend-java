@@ -148,13 +148,13 @@ public class Sdk {
 		"toName":""
 	}'
      */
-    public Receipt executeContract(Node node, Account fromAccount, String contractAddress, String method, String params) throws Exception {
+    public Receipt executeContract(Node node, Account fromAccount, String contractAddress, String method, String params, Boolean write) throws Exception {
         try (Http http = new Http()) {
             Transaction transaction = Transaction.create(
                     fromAccount.getPrivateKey(),
                     fromAccount.getAddress(),
                     contractAddress,
-                    Transaction.Type.SMART_CONTRACT,
+                    write ? Transaction.Type.SMART_CONTRACT : Transaction.Type.READ_SMART_CONTRACT,
                     "0",
                     "",
                     method,
